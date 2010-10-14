@@ -1,0 +1,195 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+    <Frame name="PagingSettingsFrame" hidden="true">
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString name="PagingSettingsFrameProfileSelectionLabel" inherits="GameFontNormal">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="15" y="-20" />
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                
+                <FontString name="PagingSettingsFrameEditSelectorTextLabel" inherits="GameFontNormal">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="15" y="-127" />
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                
+                <FontString name="PagingSettingsFrameVersion" inherits="GameFontDisable">
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT">
+                            <Offset x="-20" y="20" />
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        
+        <Frames>
+            <Frame name="PagingSettingsFrameProfileSelection" inherits="UIDropDownMenuTemplate" enableMouse="true">
+                <Anchors>
+                    <Anchor relativeTo="PagingSettingsFrameProfileSelectionLabel" point="LEFT" relativePoint="RIGHT">
+                        <Offset y="-3" />
+                    </Anchor>
+                </Anchors>
+
+                <Scripts>
+                    <OnLoad>
+                        self.type = CONTROLTYPE_DROPDOWN;
+                        self.label = getglobal(self:GetName() .. "Label");
+                        self.label:SetText(PagingL["Profile:"]);
+                        
+                        UIDropDownMenu_Initialize(self, PagingSettingsFrameProfileSelection_DropDownCallback);
+                        
+                        UIDropDownMenu_SetWidth(self, 275, 5); 
+                        UIDropDownMenu_JustifyText(self, "LEFT");
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            
+            <CheckButton name="PagingSettingsFrameAutoChooseProfile" inherits="OptionsCheckButtonTemplate">
+                <Anchors>
+                    <Anchor relativeTo="PagingSettingsFrameProfileSelection" point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                        <Offset x="15" y="-3" />
+                    </Anchor>
+                </Anchors>
+                
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentHelpText" inherits="GameFontWhiteSmall" justifyH="LEFT" justifyV="TOP">
+                            <Anchors>
+                                <Anchor relativeTo="$parentText" point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                                    <Offset y="-5" />
+                                </Anchor>
+                            </Anchors>
+                            
+                            <Size>
+                                <AbsDimension x="300" y="80" />
+                            </Size>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                
+                <Scripts>
+                    <OnLoad>
+                        self.label = getglobal(self:GetName() .. "Text");
+                        self.label:SetText(PagingL["Automatically choose matching profile"]);
+                        
+                        self.helpText = getglobal(self:GetName() .. "HelpText");
+                        self.helpText:SetText(
+                            PagingL["Selects the most appropriate profile automatically at each login."] .." "..
+                            PagingL["Profiles at the top of the list have priority over those at the bottom."] .." "..
+                            PagingL["The relevant profile is tagged with \"automatic\" in the list."]
+                        );
+                    </OnLoad>
+                    <OnClick function="PagingSettingsFrameAutoChooseProfile_OnClick" />
+                </Scripts>
+            </CheckButton>
+            
+            <ScrollFrame name="PagingSettingsFrameEditSelectorScrollFrame" inherits="UIPanelScrollFrameTemplate">
+                <Anchors>
+                    <Anchor relativeTo="PagingSettingsFrameEditSelectorTextLabel" point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                        <Offset x="7" y="-15" />
+                    </Anchor>
+                </Anchors>
+                
+                <Size>
+                    <AbsDimension x="350" y="65" />
+                </Size>
+                
+                <ScrollChild>
+                    <EditBox name="PagingSettingsFrameEditSelectorText" multiLine="true" autoFocus="false">
+                        <Size>
+                            <AbsDimension x="350" y="35" />
+                        </Size>
+                        
+                        
+                        <Scripts>
+                            <OnLoad>
+                                self.label = getglobal(self:GetName() .. "Label");
+                                self.label:SetText(PagingL["Selector:"]);
+                            </OnLoad>
+                            <OnTextChanged>
+                                ScrollingEdit_OnTextChanged(self, self:GetParent());
+                                PagingSettingsFrameEditSelectorText_OnTextChanged(self);
+                            </OnTextChanged>
+                            <OnCursorChanged>
+                                ScrollingEdit_OnCursorChanged(self, x, y, w, h);
+                            </OnCursorChanged>
+                            <OnUpdate>
+                                ScrollingEdit_OnUpdate(self, elapsed, self:GetParent());
+                            </OnUpdate>
+                            <OnEscapePressed>
+                                self:ClearFocus();
+                            </OnEscapePressed>
+                            <OnEditFocusLost>
+                                PagingSettingsFrameEditSelectorText_OnEditFocusLost(self);
+                            </OnEditFocusLost>
+                        </Scripts>
+                        
+                        <FontString inherits="GameFontHighlight" />
+                    </EditBox>
+                </ScrollChild>
+            </ScrollFrame>
+            
+            <Frame name="PagingSettingsFrameEditSelectorTextBackground" enableMouse="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="PagingSettingsFrameEditSelectorScrollFrame">
+                        <Offset x="-8" y="8" />
+                    </Anchor>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="PagingSettingsFrameEditSelectorScrollFrame">
+                        <Offset x="28" y="-8" />
+                    </Anchor>
+                </Anchors>
+                
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentHelpText" inherits="GameFontWhiteSmall" justifyH="LEFT" justifyV="TOP">
+                            <Anchors>
+                                <Anchor relativeTo="$parent" point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                                    <Offset y="-5" />
+                                </Anchor>
+                                <Anchor relativeTo="$parent" point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+                                    <Offset y="-80" />
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                
+                <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <EdgeSize>
+                        <AbsValue val="16"/>
+                    </EdgeSize>
+                    <TileSize>
+                        <AbsValue val="16"/>
+                    </TileSize>
+                    <BackgroundInsets>
+                        <AbsInset left="5" right="5" top="5" bottom="5"/>
+                    </BackgroundInsets>
+                </Backdrop>
+                <Scripts>
+                    <OnLoad>
+                        self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b);
+                        self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b);
+                        
+                        self.helpText = getglobal(self:GetName() .. "HelpText");
+                        self.helpText:SetText(
+                            PagingL["Use macro modifier syntax to specify the page numbers, separated by semicolons."] .." "..
+                            PagingL["If a condition is missing a page number, it will use the default page instead."] .." "..
+                            PagingL["Make sure the selector ends with a semicolon (%s)."]:format(NORMAL_FONT_COLOR_CODE .. ";" .. FONT_COLOR_CODE_CLOSE)
+                        );
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+        
+        <Scripts>
+            <OnLoad function="PagingSettingsFrame_OnLoad" />
+            <OnEvent function="PagingSettingsFrame_OnEvent" />
+        </Scripts>
+    </Frame>
+</Ui>

@@ -1,0 +1,16 @@
+## Interface: 40000
+## Title: Paging
+## Version: 1.0.2
+## Author: Teomyr
+## Notes: Provides modifier-based paging for the main action bar.
+## Notes-deDE: Statusabhängiger Leistenwechsel für die Hauptaktionsleiste.
+## Notes-frFR: Fournit un simple système de pages pour la barre d'action principale.
+## SavedVariables: PagingProfiles
+## SavedVariablesPerCharacter: PagingUseProfile
+Localization.lua
+Localization-deDE.lua
+Localization-frFR.lua
+Paging.lua
+PagingSettings.lua
+PagingSettings.xml
+PagingIndicator.xml
