@@ -4,7 +4,7 @@ local PagingBindingsUpdated = false;
 
 local PagingFrame = CreateFrame("FRAME", nil, nil, "SecureHandlerStateTemplate");
 
-PagingFrame:RegisterEvent("PLAYER_LOGIN");
+PagingFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 PagingFrame:RegisterEvent("ACTIONBAR_PAGE_CHANGED");
 PagingFrame:RegisterEvent("UPDATE_BONUS_ACTIONBAR");
 PagingFrame:RegisterEvent("UPDATE_BINDINGS");
@@ -162,7 +162,7 @@ function Paging_SetOptions(options)
 end
 
 PagingFrame:SetScript("OnEvent", function(self, event, ...)
-	if event == "PLAYER_LOGIN" or event == "PLAYER_REGEN_ENABLED" then
+	if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED" then
 		if not PagingInitialized then
 			Paging_Initialize();
 		end
