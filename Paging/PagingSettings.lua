@@ -43,7 +43,7 @@ function PagingProfile_ApplyEffectiveProfile()
 
 	if PagingProfile_Exists(PagingProfiles, usedProfile) then
 		options = PagingProfiles[usedProfile].selector;
-		overrideModifiers = PagingProfiles[usedProfile].overrideModifiers;
+		overrideModifiers = (PagingProfiles[usedProfile].overrideModifiers ~= false);
 	end
 
 	Paging_SetOptions(options, overrideModifiers);
