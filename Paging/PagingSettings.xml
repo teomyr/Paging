@@ -13,7 +13,7 @@
                 <FontString name="PagingSettingsFrameEditSelectorTextLabel" inherits="GameFontNormal">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
-                            <Offset x="15" y="-180" />
+                            <Offset x="15" y="-190" />
                         </Anchor>
                     </Anchors>
                 </FontString>
@@ -115,11 +115,12 @@
                 <Scripts>
                     <OnLoad>
                         self.label = getglobal(self:GetName() .. "Text");
-                        self.label:SetText(PagingL["Override modifier key bindings"]);
+                        self.label:SetText(PagingL["Adjust key bindings for modifiers"]);
                         
                         self.helpText = getglobal(self:GetName() .. "HelpText");
                         self.helpText:SetText(
-                            PagingL["When using the CTRL, ALT or SHIFT modifiers in your selectors, temporarily disables conflicting key bindings for other action buttons."]
+                            PagingL["Make sure that key presses involving modifiers such as CTRL, ALT or SHIFT go to the correct action buttons."] .. " " ..
+                            PagingL["This option is recommended unless you want to handle conflicting key bindings (e.g. with the pet bar) by yourself."]
                         );
                     </OnLoad>
                     <OnClick function="PagingSettingsFrameOverrideModifiers_OnClick" />
