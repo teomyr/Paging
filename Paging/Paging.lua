@@ -1,4 +1,4 @@
-local PagingOptions;
+local PagingOptions, PagingOverrideModifiers;
 local PagingInitialized = false;
 local PagingBindingsUpdated = false;
 
@@ -120,16 +120,18 @@ function Paging_UpdateBindings()
 
 	ClearOverrideBindings(PagingFrame);
 
-	for button_index = 1, NUM_ACTIONBAR_BUTTONS do
-		local command = "ACTIONBUTTON" .. button_index;
-		local primary_binding = GetBindingKey(command);
+	if PagingOverrideModifiers then
+		for button_index = 1, NUM_ACTIONBAR_BUTTONS do
+			local command = "ACTIONBUTTON" .. button_index;
+			local primary_binding = GetBindingKey(command);
 
-		if primary_binding ~= nil then
-			for modifier in string.gmatch(PagingOptions, "%[[^%]]*mod%s*:%s*(%w+)[^%]]*%]") do
-				local modified_binding = modifier .. "-" .. primary_binding;
+			if primary_binding ~= nil then
+				for modifier in string.gmatch(PagingOptions, "%[[^%]]*mod%s*:%s*(%w+)[^%]]*%]") do
+					local modified_binding = modifier .. "-" .. primary_binding;
 
-				if GetBindingAction(modified_binding) ~= "" then
-					SetOverrideBinding(PagingFrame, false, modified_binding, "nil");
+					if GetBindingAction(modified_binding) ~= "" then
+						SetOverrideBinding(PagingFrame, false, modified_binding, "nil");
+					end
 				end
 			end
 		end
@@ -139,7 +141,9 @@ function Paging_UpdateBindings()
 	PagingBindingsUpdated = true;
 end
 
-function Paging_SetOptions(options)
+function Paging_SetOptions(options, overrideModifiers)
+	PagingOverrideModifiers = overrideModifiers;
+
 	if not PagingInitialized or InCombatLockdown() then
 		PagingOptionsQueued = options;
 		
@@ -172,7 +176,7 @@ PagingFrame:SetScript("OnEvent", function(self, event, ...)
 		end
 
 		if PagingOptionsQueued then
-			Paging_SetOptions(PagingOptionsQueued);
+			Paging_SetOptions(PagingOptionsQueued, PagingOverrideModifiers);
 		end
 	elseif event == "UPDATE_BINDINGS" then
 		PagingBindingsUpdated = false;

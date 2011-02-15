@@ -13,7 +13,7 @@
                 <FontString name="PagingSettingsFrameEditSelectorTextLabel" inherits="GameFontNormal">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
-                            <Offset x="15" y="-127" />
+                            <Offset x="15" y="-180" />
                         </Anchor>
                     </Anchors>
                 </FontString>
@@ -86,6 +86,43 @@
                         );
                     </OnLoad>
                     <OnClick function="PagingSettingsFrameAutoChooseProfile_OnClick" />
+                </Scripts>
+            </CheckButton>
+
+            <CheckButton name="PagingSettingsFrameOverrideModifiers" inherits="OptionsCheckButtonTemplate">
+                <Anchors>
+                    <Anchor relativeTo="PagingSettingsFrameProfileSelection" point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                        <Offset x="15" y="-75" />
+                    </Anchor>
+                </Anchors>
+                
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentHelpText" inherits="GameFontWhiteSmall" justifyH="LEFT" justifyV="TOP">
+                            <Anchors>
+                                <Anchor relativeTo="$parentText" point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                                    <Offset y="-5" />
+                                </Anchor>
+                            </Anchors>
+                            
+                            <Size>
+                                <AbsDimension x="300" y="80" />
+                            </Size>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                
+                <Scripts>
+                    <OnLoad>
+                        self.label = getglobal(self:GetName() .. "Text");
+                        self.label:SetText(PagingL["Override modifier key bindings"]);
+                        
+                        self.helpText = getglobal(self:GetName() .. "HelpText");
+                        self.helpText:SetText(
+                            PagingL["When using the CTRL, ALT or SHIFT modifiers in your selectors, temporarily disables conflicting key bindings for other action buttons."]
+                        );
+                    </OnLoad>
+                    <OnClick function="PagingSettingsFrameOverrideModifiers_OnClick" />
                 </Scripts>
             </CheckButton>
             

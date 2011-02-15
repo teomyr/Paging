@@ -39,16 +39,18 @@ end
 function PagingProfile_ApplyEffectiveProfile()
 	local usedProfile = PagingProfile_GetEffectiveProfile(PagingProfiles, PagingUseProfile);
 	local options = "";
+	local overrideModifiers = true;
 
 	if PagingProfile_Exists(PagingProfiles, usedProfile) then
 		options = PagingProfiles[usedProfile].selector;
+		overrideModifiers = PagingProfiles[usedProfile].overrideModifiers;
 	end
 
-	Paging_SetOptions(options);
+	Paging_SetOptions(options, overrideModifiers);
 end
 
 function PagingProfile_ApplyTemporaryProfile()
-	Paging_SetOptions(PagingSettingsFrameEditSelectorText:GetText());
+	Paging_SetOptions(PagingSettingsFrameEditSelectorText:GetText(), (PagingSettingsFrameOverrideModifiers:GetChecked() == 1));
 end
 
 function PagingProfile_Exists(profiles, profileName)
@@ -61,7 +63,7 @@ end
 
 function PagingProfile_Create(profiles, profileName)
 	if not PagingProfile_Exists(profiles, profileName) then
-		profiles[profileName] = { selector = "" };
+		profiles[profileName] = { selector = "", overrideModifiers = true };
 		return true;
 	end
 
@@ -122,13 +124,11 @@ function PagingProfile_Edit(profiles, profileName)
 
 	PagingEditProfile = profileName;
 
+	PagingProfile_Create(PagingProfilesTemporary, profileName);
 	local profileObject = PagingProfilesTemporary[profileName];
 
-	if PagingProfile_IsActive(profiles, profileName) then
-		PagingSettingsFrameEditSelectorText:SetText(profiles[profileName].selector);
-	else
-		PagingSettingsFrameEditSelectorText:SetText("");
-	end
+	PagingSettingsFrameEditSelectorText:SetText(profileObject.selector);
+	PagingSettingsFrameOverrideModifiers:SetChecked(profileObject == nil or profileObject.overrideModifiers ~= false);
 
 	PagingProfile_ApplyTemporaryProfile();
 end
@@ -241,24 +241,19 @@ function PagingSettingsFrameAutoChooseProfile_OnClick(self)
 	PagingSettingsFrameProfileSelection_UpdateText();
 end
 
+-- Override Modifiers --
+
+function PagingSettingsFrameOverrideModifiers_OnClick(self)
+	PagingProfilesTemporary[PagingEditProfile].overrideModifiers = (self:GetChecked() == 1);
+	PagingProfile_ApplyTemporaryProfile();
+end
+
 -- Selector --
 
 function PagingSettingsFrameEditSelectorText_OnTextChanged(self)
-	local text = self:GetText();
+	PagingProfilesTemporary[PagingEditProfile].selector = self:GetText();
 
-	if text == "" then
-		if PagingProfile_Delete(PagingProfilesTemporary, PagingEditProfile) then
-			PagingSettingsFrameProfileSelection_UpdateText();
-		end
-	else
-		local isNewProfile = PagingProfile_Create(PagingProfilesTemporary, PagingEditProfile);
-
-		PagingProfilesTemporary[PagingEditProfile].selector = text;
-
-		if isNewProfile then
-			PagingSettingsFrameProfileSelection_UpdateText();
-		end
-	end
+	PagingSettingsFrameProfileSelection_UpdateText();
 end
 
 function PagingSettingsFrameEditSelectorText_OnEditFocusLost(self)
