@@ -109,7 +109,7 @@ end
 function PagingProfile_GetAutomaticProfile(profiles)
 	if profiles ~= nil then
 		for profileIndex, profileName in pairs(PagingProfile_Names) do
-			if profiles[profileName] ~= nil or profileName == "DEFAULT" then
+			if PagingProfile_IsActive(profiles, profileName) or profileName == "DEFAULT" then
 				return profileName;
 			end
 		end
