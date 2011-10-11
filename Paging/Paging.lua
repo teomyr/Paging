@@ -55,49 +55,30 @@ end
 function Paging_InitializeRestrictedEnvironment()
 	PagingFrame:SetFrameRef("BonusActionBarFrame", BonusActionBarFrame);
 
-	PagingFrame:Execute([[
+	PagingFrame:Execute(([[
+		NUM_ACTIONBAR_BUTTONS = %d;
 		buttons = newtable();
 		BonusActionBarFrame = self:GetFrameRef("BonusActionBarFrame");
-	]]);
+	]]):format(NUM_ACTIONBAR_BUTTONS));
 
 	for id = 1, NUM_ACTIONBAR_BUTTONS do
 		local button_name = "ActionButton" .. id;
-		local button_frame = getglobal(button_name);
+		local bonusbutton_name = "BonusActionButton" .. id;
 
-		PagingFrame:SetFrameRef(button_name, button_frame);
+		PagingFrame:SetFrameRef(button_name, getglobal(button_name));
+		PagingFrame:SetFrameRef(bonusbutton_name, getglobal(bonusbutton_name));
+
 		PagingFrame:Execute(([[
-			buttons[%s] = self:GetFrameRef("%s");
-		]]):format(id, button_name));
+			buttons[%d] = self:GetFrameRef("%s");
+			buttons[%d + NUM_ACTIONBAR_BUTTONS] = self:GetFrameRef("%s");
+		]]):format(id, button_name, id, bonusbutton_name));
 	end
 
 	PagingFrame:SetAttribute("_onstate-paging", ([[
-		local isShowingBonusBar = (GetActionBarPage() == 1 and GetBonusBarOffset() > 0);
 		local newpage = tonumber(self:GetAttribute("state-paging"));
-		
-		if newpage == nil then
-			-- No page is set for the current state. We restore the default action bar
-			-- and also bring back the bonus action bar, if necessary.
 
-			-- UnregisterStateDriver seems to be restricted for pre-4.0, so we use its
-			-- counterpart with an empty value, which seems to work just as well.
-			--   UnregisterStateDriver(BonusActionBarFrame, "visibility");
-			RegisterStateDriver(BonusActionBarFrame, "visibility", "");
-			
-			if isShowingBonusBar then
-				BonusActionBarFrame:Show();
-			else
-				BonusActionBarFrame:Hide();
-			end
-		else
-			-- We are paging the main action bar, and we don't want the bonus action
-			-- bar to get in our way. To prevent it from suddenly appearing, we
-			-- register a state driver that forces it to hide at all times.
-			
-			RegisterStateDriver(BonusActionBarFrame, "visibility", "hide");
-		end
-
-		for index = 1, %d do
-			buttons[index]:SetAttribute("actionpage", newpage);
+		for index, button in pairs(buttons) do
+			button:SetAttribute("actionpage", newpage);
 		end
 
 		control:CallMethod("UpdatePageDisplay");
