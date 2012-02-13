@@ -1,4 +1,4 @@
-## Interface: 40000
+## Interface: 40300
 ## Title: Paging
 ## Version: 1.0.2 (Dual-Override experimental release)
 ## Author: Teomyr
