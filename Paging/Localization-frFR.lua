@@ -4,6 +4,8 @@ if GetLocale() == "frFR" then
 L["Profile:"] = "Profil:";
 L["automatic"] = "automatique";
 L["Example"] = "Exemple";
+L["Copy from…"] = "Copier de…";
+L["This will overwrite the old selector you have configured for profile %s.\nAre you sure?"] = "Cette option remplacera le sélecteur configuré pour le profil %s.\nContinuer?";
 
 L["Automatically choose matching profile"] = "Choisir le profil correspondant automatiquement";
 

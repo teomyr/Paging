@@ -17,6 +17,8 @@ L["Version %s"] = "";
 L["Profile:"] = "";
 L["automatic"] = "";
 L["Example"] = "";
+L["Copy from…"] = "";
+L["This will overwrite the old selector you have configured for profile %s.\nAre you sure?"] = "";
 
 L["Automatically choose matching profile"] = "";
 
