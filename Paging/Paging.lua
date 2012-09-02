@@ -53,25 +53,19 @@ function Paging_Initialize()
 end
 
 function Paging_InitializeRestrictedEnvironment()
-	PagingFrame:SetFrameRef("BonusActionBarFrame", BonusActionBarFrame);
-
 	PagingFrame:Execute(([[
 		NUM_ACTIONBAR_BUTTONS = %d;
 		buttons = newtable();
-		BonusActionBarFrame = self:GetFrameRef("BonusActionBarFrame");
 	]]):format(NUM_ACTIONBAR_BUTTONS));
 
 	for id = 1, NUM_ACTIONBAR_BUTTONS do
 		local button_name = "ActionButton" .. id;
-		local bonusbutton_name = "BonusActionButton" .. id;
 
 		PagingFrame:SetFrameRef(button_name, getglobal(button_name));
-		PagingFrame:SetFrameRef(bonusbutton_name, getglobal(bonusbutton_name));
 
 		PagingFrame:Execute(([[
 			buttons[%d] = self:GetFrameRef("%s");
-			buttons[%d + NUM_ACTIONBAR_BUTTONS] = self:GetFrameRef("%s");
-		]]):format(id, button_name, id, bonusbutton_name));
+		]]):format(id, button_name));
 	end
 
 	PagingFrame:SetAttribute("_onstate-paging", ([[

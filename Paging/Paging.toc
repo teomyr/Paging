@@ -1,6 +1,6 @@
-## Interface: 40300
+## Interface: 50001
 ## Title: Paging
-## Version: 1.0.2 (Dual-Override experimental release)
+## Version: 1.0.3
 ## Author: Teomyr
 ## Notes: Provides modifier-based paging for the main action bar.
 ## Notes-deDE: Statusabhängiger Leistenwechsel für die Hauptaktionsleiste.
