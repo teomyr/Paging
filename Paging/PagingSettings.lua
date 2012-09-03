@@ -45,7 +45,28 @@ function PagingProfile_ApplyEffectiveProfile()
 		overrideModifiers = (PagingProfiles[usedProfile].overrideModifiers ~= false);
 	end
 
-	Paging_SetOptions(options, overrideModifiers);
+	-- By default, we disable Paging for certain "special" occasions where the
+	-- default action bar is overridden, such as in vehicles, while possessing
+	-- an enemy unit or during pet battles. The user may not think about
+	-- accounting for these, and it would be very unfortunate if his selector
+	-- broke them at an inconvenient time.
+	-- The user can change this behaviour by explicitly adding a selector for
+	-- these bars as desired.
+
+	local disableFor = { "overridebar", "extrabar", "possessbar", "petbattle" };
+	local disableForSelector = "";
+
+	for i, bar in ipairs(disableFor) do
+		if string.find(options, bar) == nil then
+			disableForSelector = disableForSelector .. "[" .. bar .. "]";
+		end
+	end
+
+	if disableForSelector == "" then
+		Paging_SetOptions(options, overrideModifiers);
+	else
+		Paging_SetOptions(disableForSelector .. ";" .. options, overrideModifiers);
+	end
 end
 
 function PagingProfile_ApplyTemporaryProfile()
