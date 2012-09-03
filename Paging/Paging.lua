@@ -96,17 +96,20 @@ function Paging_UpdateBindings()
 	ClearOverrideBindings(PagingFrame);
 
 	if PagingOverrideModifiers then
-		for button_index = 1, NUM_ACTIONBAR_BUTTONS do
-			local command = "ACTIONBUTTON" .. button_index;
-			local primary_binding = GetBindingKey(command);
+		-- find selectors (anything in square brackets)
+		for selector in string.gmatch(PagingOptions, "%b[]") do
+			-- find modifier specifiers ("mod:" or "modifier:")
 
-			if primary_binding ~= nil then
-				for modifier in string.gmatch(PagingOptions, "%[[^%]]*mod%s*:%s*(%w+)[^%]]*%]") do
-					local modified_binding = modifier .. "-" .. primary_binding;
+			for modifier_string in string.gmatch(selector, "mod%s*:%s*([^%],]+)") do
+				-- find individual modifiers (e.g. "ctrl" or "alt-shift")
+				for modifier in string.gmatch(modifier_string, "[%a-]+") do
+					Paging_OverrideSingleModifier(modifier);
+				end
+			end
 
-					if GetBindingAction(modified_binding) ~= "" then
-						SetOverrideBinding(PagingFrame, false, modified_binding, "nil");
-					end
+			for modifier_string in string.gmatch(selector, "modifier%s*:%s*([^%[,]+)") do
+				for modifier in string.gmatch(modifier_string, "[%a-]+") do
+					Paging_OverrideSingleModifier(modifier);
 				end
 			end
 		end
@@ -114,6 +117,21 @@ function Paging_UpdateBindings()
 
 	PagingFrame:UnregisterEvent("PLAYER_REGEN_ENABLED");
 	PagingBindingsUpdated = true;
+end
+
+function Paging_OverrideSingleModifier(modifier)
+	for button_index = 1, NUM_ACTIONBAR_BUTTONS do
+		local command = "ACTIONBUTTON" .. button_index;
+		local primary_binding = GetBindingKey(command);
+
+		if primary_binding ~= nil then
+			local modified_binding = modifier .. "-" .. primary_binding;
+
+			if GetBindingAction(modified_binding) ~= "" then
+				SetOverrideBinding(PagingFrame, false, modified_binding, "nil");
+			end
+		end
+	end
 end
 
 function Paging_SetOptions(options, overrideModifiers)
