@@ -119,18 +119,77 @@ function Paging_UpdateBindings()
 	PagingBindingsUpdated = true;
 end
 
-function Paging_OverrideSingleModifier(modifier)
-	for button_index = 1, NUM_ACTIONBAR_BUTTONS do
-		local command = "ACTIONBUTTON" .. button_index;
-		local primary_binding = GetBindingKey(command);
+local function modifierCombinations(modIter)
+	-- Given an iterator that yields one modifier each, list all possible
+	-- combinations that are part of it, e.g. for "alt-shift-lctrl", this
+	-- yields "alt", "alt-shift", "alt-shift-ctrl", "alt-shift-lctrl" etc.
+	-- not necessarily in this order
 
-		if primary_binding ~= nil then
-			local modified_binding = modifier .. "-" .. primary_binding;
+	local mod = modIter();
 
-			if GetBindingAction(modified_binding) ~= "" then
-				SetOverrideBinding(PagingFrame, false, modified_binding, "nil");
+	if mod ~= nil then
+		local index = 0;
+		local sub_iterator = modifierCombinations(modIter);
+		local sub_term;
+		local side_spec, side_neutral_mod = string.match(mod, "^([rl])(%a+)$");
+
+		return function()
+			index = index + 1;
+
+			if index == 1 then
+				return mod;
+			end
+
+			if index == 2 then
+				if side_spec ~= nil then
+					return side_neutral_mod;
+				else
+					index = index + 1;
+				end
+			end
+
+			if sub_iterator ~= nil then
+				if index % 3 == 2 then
+					if side_spec ~= nil then
+						if sub_term ~= nil then
+							return side_neutral_mod .. "-" .. sub_term;
+						end
+					else
+						index = index + 1;
+					end
+				end
+
+				if index % 3 == 0 then
+					sub_term = sub_iterator();
+
+					if sub_term ~= nil then
+						return sub_term;
+					end
+				elseif index % 3 == 1 then
+					if sub_term ~= nil then
+						return mod .. "-" .. sub_term;
+					end
+				end
 			end
 		end
+	end
+end
+
+function Paging_OverrideSingleModifier(modifier)
+	for combination in modifierCombinations(string.gmatch(modifier, "%a+")) do
+		for button_index = 1, NUM_ACTIONBAR_BUTTONS do
+			local command = "ACTIONBUTTON" .. button_index;
+			local primary_binding = GetBindingKey(command);
+
+			if primary_binding ~= nil then
+				local modified_binding = combination .. "-" .. primary_binding;
+
+				if GetBindingAction(modified_binding) ~= "" then
+					SetOverrideBinding(PagingFrame, false, modified_binding, "nil");
+				end
+			end
+		end
+
 	end
 end
 
