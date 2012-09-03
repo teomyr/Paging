@@ -211,7 +211,7 @@ function Paging_SetOptions(options, overrideModifiers)
 
 	PagingFrame:SetAttribute("state-paging", SecureCmdOptionParse(options));
 
-	RegisterStateDriver(PagingFrame, "paging", options);
+	RegisterAttributeDriver(PagingFrame, "state-paging", options);
 	
 	PagingBindingsUpdated = false;
 	Paging_UpdateBindings();
