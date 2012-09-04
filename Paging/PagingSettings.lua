@@ -1,8 +1,9 @@
 local addonName, L = ...;
 
-local PagingUseProfileTemporary;
-local PagingProfilesTemporary;
-local PagingEditProfile;
+local PagingUseProfileBackup; -- Store previous configuration so we can revert
+local PagingProfilesBackup;   -- to it on Cancel
+
+local PagingEditProfile; -- which profile is being edited
 
 -- Profile management functions and data --
 
@@ -15,10 +16,14 @@ local PagingProfile_Types = {
 };
 
 local PagingProfile_AutoProfiles = {
-	"CHARACTER:" .. UnitName("player") .. "-" .. GetRealmName(),
-	"CLASS:" .. UnitClassBase("player"),
-	"REALM:" .. GetRealmName(),
-	"DEFAULT",
+	["CHARACTER"] = "CHARACTER:" .. UnitName("player") .. "-" .. GetRealmName(),
+	["CLASS"] = "CLASS:" .. UnitClassBase("player"),
+	["REALM"] = "REALM:" .. GetRealmName(),
+	["DEFAULT"] = "DEFAULT",
+};
+
+local PagingProfile_AutoProfilesPriority = {
+	"CHARACTER", "CLASS", "REALM", "DEFAULT"
 };
 
 function PagingProfile_Initialize()
@@ -27,22 +32,25 @@ function PagingProfile_Initialize()
 	end
 
 	-- Create example profile if necessary
-	if not PagingProfile_Exists(PagingProfiles, "EXAMPLE") then
-		PagingProfile_Create(PagingProfiles, "EXAMPLE");
-		PagingProfiles["EXAMPLE"].selector = "[mod:shift] 6; [mod:ctrl] 5;";
+	if not PagingProfile_Exists("EXAMPLE") then
+		PagingProfile_Create("EXAMPLE");
+		PagingProfiles["EXAMPLE"].selector = "[mod: shift] 6; [mod: ctrl] 5;";
 	end
 
 	PagingProfile_ApplyEffectiveProfile();
 end
 
 function PagingProfile_ApplyEffectiveProfile()
-	local usedProfile = PagingProfile_GetEffectiveProfile(PagingProfiles, PagingUseProfile);
+	PagingProfile_Apply(PagingProfile_GetEffectiveProfile());
+end
+
+function PagingProfile_Apply(profileName)
 	local options = "";
 	local overrideModifiers = true;
 
-	if PagingProfile_Exists(PagingProfiles, usedProfile) then
-		options = PagingProfiles[usedProfile].selector;
-		overrideModifiers = (PagingProfiles[usedProfile].overrideModifiers ~= false);
+	if PagingProfile_Exists(profileName) then
+		options = PagingProfiles[profileName].selector;
+		overrideModifiers = (PagingProfiles[profileName].overrideModifiers ~= false);
 	end
 
 	-- By default, we disable Paging for certain "special" occasions where the
@@ -69,30 +77,26 @@ function PagingProfile_ApplyEffectiveProfile()
 	end
 end
 
-function PagingProfile_ApplyTemporaryProfile()
-	Paging_SetOptions(PagingSettingsFrameEditSelectorText:GetText(), (PagingSettingsFrameOverrideModifiers:GetChecked() == 1));
+function PagingProfile_Exists(profileName)
+	return (type(PagingProfiles) == "table" and type(PagingProfiles[profileName]) == "table");
 end
 
-function PagingProfile_Exists(profiles, profileName)
-	return (type(profiles) == "table" and type(profiles[profileName]) == "table");
+function PagingProfile_IsActive(profileName)
+	return (PagingProfile_Exists(profileName) and PagingProfiles[profileName].selector ~= "");
 end
 
-function PagingProfile_IsActive(profiles, profileName)
-	return (PagingProfile_Exists(profiles, profileName) and profiles[profileName].selector ~= "");
-end
-
-function PagingProfile_Create(profiles, profileName)
-	if not PagingProfile_Exists(profiles, profileName) then
-		profiles[profileName] = { selector = "", overrideModifiers = true };
+function PagingProfile_Create(profileName)
+	if not PagingProfile_Exists(profileName) then
+		PagingProfiles[profileName] = { selector = "", overrideModifiers = true };
 		return true;
 	end
 
 	return false;
 end
 
-function PagingProfile_Delete(profiles, profileName)
-	if PagingProfile_Exists(profiles, profileName) then
-		profiles[profileName] = nil;
+function PagingProfile_Delete(profileName)
+	if PagingProfile_Exists(profileName) then
+		PagingProfiles[profileName] = nil;
 		return true;
 	end
 
@@ -120,49 +124,51 @@ local function deepcopy(object)
 	return _copy(object)
 end
 
-function PagingProfile_Copy(profiles, sourceProfile, destinationProfile)
+function PagingProfile_Copy(sourceProfile, destinationProfile)
 	if sourceProfile == destinationProfile then
 		return;
 	end
 
 	-- Ensure that the target profile exists
-	PagingProfile_Create(profiles, destinationProfile);
+	PagingProfile_Create(destinationProfile);
 
 	-- Copy profile
-	profiles[destinationProfile] = deepcopy(profiles[sourceProfile]);
+	PagingProfiles[destinationProfile] = deepcopy(PagingProfiles[sourceProfile]);
 end
 
-function PagingProfile_GetDisplayText(profiles, profileName)
+function PagingProfile_GetDisplayText(profileName)
 	local profileType, profileSubject = profileName:match("(%u+):?([^-]*)");
 	local displayText = NORMAL_FONT_COLOR_CODE .. PagingProfile_Types[profileType];
 
 	if profileSubject ~= "" then
-		if PagingProfile_IsActive(profiles, profileName) then
+		if PagingProfile_IsActive(profileName) then
 			displayText = displayText .. ": " .. FONT_COLOR_CODE_CLOSE .. profileSubject;
 		else
 			displayText = displayText .. ": " .. GRAY_FONT_COLOR_CODE .. profileSubject;
 		end
 	end
 
-	if PagingUseProfileTemporary == nil and PagingProfile_GetAutomaticProfile(profiles) == profileName then
+	if PagingUseProfile == nil and PagingProfile_GetAutomaticProfile() == profileName then
 		displayText = displayText .. GREEN_FONT_COLOR_CODE .. " (" .. L["automatic"] .. ")";
 	end
 
 	return displayText;
 end
 
-function PagingProfile_GetEffectiveProfile(profiles, useProfile)
-	if useProfile ~= nil then
-		return useProfile;
+function PagingProfile_GetEffectiveProfile()
+	if PagingUseProfile ~= nil then
+		return PagingUseProfile;
 	else
-		return PagingProfile_GetAutomaticProfile(profiles);
+		return PagingProfile_GetAutomaticProfile();
 	end
 end
 
-function PagingProfile_GetAutomaticProfile(profiles)
-	if profiles ~= nil then
-		for profileIndex, profileName in pairs(PagingProfile_AutoProfiles) do
-			if PagingProfile_IsActive(profiles, profileName) or profileName == "DEFAULT" then
+function PagingProfile_GetAutomaticProfile()
+	if PagingProfiles ~= nil then
+		for _, autoProfileClass in pairs(PagingProfile_AutoProfilesPriority) do
+			local profileName = PagingProfile_AutoProfiles[autoProfileClass];
+
+			if PagingProfile_IsActive(profileName) or profileName == "DEFAULT" then
 				return profileName;
 			end
 		end
@@ -171,50 +177,67 @@ function PagingProfile_GetAutomaticProfile(profiles)
 	return "DEFAULT";
 end
 
-function PagingProfile_Edit(profiles, profileName)
+function PagingProfile_Edit(profileName)
 	UIDropDownMenu_SetSelectedValue(PagingSettingsFrameProfileSelection, profileName);
 	PagingSettingsFrameProfileSelection_UpdateText();
 
 	PagingEditProfile = profileName;
 
-	PagingProfile_Create(PagingProfilesTemporary, profileName);
-	local profileObject = PagingProfilesTemporary[profileName];
+	PagingProfile_Create(profileName);
+	local profileObject = PagingProfiles[profileName];
 
 	PagingSettingsFrameEditSelectorText:SetText(profileObject.selector);
-	PagingSettingsFrameOverrideModifiers:SetChecked(profileObject == nil or profileObject.overrideModifiers ~= false);
+	PagingSettingsFrameOverrideModifiers:SetChecked(profileObject.overrideModifiers ~= false);
 
-	PagingProfile_ApplyTemporaryProfile();
+	PagingProfile_Apply(profileName);
 end
 
 -- Settings frame --
 
+local retainBackup = false;
+
 function PagingSettingsFrame_Refresh(self)
-	PagingUseProfileTemporary = PagingUseProfile;
+	-- Called when the settings frame is brought up or after applying defaults.
+	
+	PagingSettingsFrameAutoChooseProfile:SetChecked(PagingUseProfile == nil);
+	PagingProfile_Edit(PagingProfile_GetEffectiveProfile());
 
-	if type(PagingProfiles) == "table" then
-		PagingProfilesTemporary = deepcopy(PagingProfiles);
-	else
-		PagingProfilesTemporary = {};
+	if not retainBackup then
+		-- This will be skipped after the user has pressed the "Defaults" button
+		-- to reset the addon's settings, in order to give him a chance to
+		-- undo that decision by pressing "Cancel".
+
+		PagingUseProfileBackup = PagingUseProfile;
+		PagingProfilesBackup = deepcopy(PagingProfiles);
 	end
 
-	if PagingUseProfileTemporary ~= nil then
-		PagingSettingsFrameAutoChooseProfile:SetChecked(false);
-		PagingProfile_Edit(PagingProfilesTemporary, PagingUseProfileTemporary);
-	else
-		PagingSettingsFrameAutoChooseProfile:SetChecked(true);
-		PagingProfile_Edit(PagingProfilesTemporary, PagingProfile_GetAutomaticProfile(PagingProfilesTemporary));
-	end
+	retainBackup = false;
 end
 
 function PagingSettingsFrame_Okay(self)
-	PagingUseProfile = PagingUseProfileTemporary;
-	PagingProfiles = deepcopy(PagingProfilesTemporary);
-
 	PagingProfile_ApplyEffectiveProfile();
 end
 
 function PagingSettingsFrame_Cancel(self)
+	PagingUseProfile = PagingUseProfileBackup;
+	PagingProfiles = deepcopy(PagingProfilesBackup);
+
 	PagingProfile_ApplyEffectiveProfile();
+end
+
+function PagingSettingsFrame_Default(self)
+	-- Clear this character's settings
+	
+	-- Before clearing, make a backup so that the user can undo this using
+	-- the "Cancel" button.
+	PagingUseProfileBackup = PagingUseProfile;
+	PagingProfilesBackup = deepcopy(PagingProfiles);
+	retainBackup = true;
+
+	PagingUseProfile = nil;
+	PagingProfile_Delete(PagingProfile_AutoProfiles["CHARACTER"]);
+
+	-- Blizzard's UI sends a refresh event right afterwards
 end
 
 function PagingSettingsFrame_OnLoad(self)
@@ -224,6 +247,7 @@ function PagingSettingsFrame_OnLoad(self)
 	self.refresh = PagingSettingsFrame_Refresh;
 	self.okay = PagingSettingsFrame_Okay;
 	self.cancel = PagingSettingsFrame_Cancel;
+	self.default = PagingSettingsFrame_Default;
 
 	InterfaceOptions_AddCategory(self);
 
@@ -240,14 +264,14 @@ end
 
 function PagingSettingsFrameProfileSelection_UpdateText()
 	local profileName = UIDropDownMenu_GetSelectedValue(PagingSettingsFrameProfileSelection);
-	PagingSettingsFrameProfileSelectionText:SetText(PagingProfile_GetDisplayText(PagingProfilesTemporary, profileName));
+	PagingSettingsFrameProfileSelectionText:SetText(PagingProfile_GetDisplayText(profileName));
 end
 
 function PagingSettingsFrameProfileSelection_DropDownOnClick(info)
-	PagingProfile_Edit(PagingProfilesTemporary, info.value);
-	PagingUseProfileTemporary = info.value;
+	PagingProfile_Edit(info.value);
+	PagingUseProfile = info.value;
 	
-	if PagingUseProfileTemporary ~= PagingProfile_GetAutomaticProfile(PagingProfilesTemporary) then
+	if PagingUseProfile ~= PagingProfile_GetAutomaticProfile() then
 		PagingSettingsFrameAutoChooseProfile:SetChecked(false);
 	end
 end
@@ -267,14 +291,14 @@ function PagingSettingsFrameProfileSelection_CopyFromOnClick(info)
 	CloseDropDownMenus(1);
 
 	function commitCopy()
-		PagingProfile_Copy(PagingProfilesTemporary, sourceProfile, PagingEditProfile);
+		PagingProfile_Copy(sourceProfile, PagingEditProfile);
 
 		-- Update UI
-		PagingProfile_Edit(PagingProfilesTemporary, PagingEditProfile);
+		PagingProfile_Edit(PagingEditProfile);
 	end
 
 	-- Prompt before simply overwriting the currently edited selector
-	if PagingProfile_IsActive(PagingProfilesTemporary, PagingEditProfile) then
+	if PagingProfile_IsActive(PagingEditProfile) then
 		StaticPopupDialogs["PAGING_CONFIRM_OVERWRITE"].OnAccept = commitCopy;
 		
 		local profileType, profileSubject = PagingEditProfile:match("(%u+):?([^-]*)");
@@ -298,8 +322,10 @@ function PagingSettingsFrameProfileSelection_DropDownCallback(self, level)
 		info.func = PagingSettingsFrameProfileSelection_DropDownOnClick;
 
 		-- Generate list of available profiles
-		for profileType, profileName in pairs(PagingProfile_AutoProfiles) do
-			info.text = PagingProfile_GetDisplayText(PagingProfilesTemporary, profileName);
+		for _, autoProfileClass in pairs(PagingProfile_AutoProfilesPriority) do
+			local profileName = PagingProfile_AutoProfiles[autoProfileClass];
+
+			info.text = PagingProfile_GetDisplayText(profileName);
 			info.value = profileName;
 			info.checked = nil;
 			UIDropDownMenu_AddButton(info, level);
@@ -339,10 +365,10 @@ end
 
 function PagingSettingsFrameAutoChooseProfile_OnClick(self)
 	if self:GetChecked() then
-		PagingUseProfileTemporary = nil;
-		PagingProfile_Edit(PagingProfilesTemporary, PagingProfile_GetAutomaticProfile(PagingProfilesTemporary));
+		PagingUseProfile = nil;
+		PagingProfile_Edit(PagingProfile_GetAutomaticProfile());
 	else
-		PagingUseProfileTemporary = UIDropDownMenu_GetSelectedValue(PagingSettingsFrameProfileSelection);
+		PagingUseProfile = UIDropDownMenu_GetSelectedValue(PagingSettingsFrameProfileSelection);
 	end
 
 	PagingSettingsFrameProfileSelection_UpdateText();
@@ -351,18 +377,18 @@ end
 -- Override Modifiers --
 
 function PagingSettingsFrameOverrideModifiers_OnClick(self)
-	PagingProfilesTemporary[PagingEditProfile].overrideModifiers = (self:GetChecked() == 1);
-	PagingProfile_ApplyTemporaryProfile();
+	PagingProfiles[PagingEditProfile].overrideModifiers = (self:GetChecked() == 1);
+	PagingProfile_ApplyEffectiveProfile();
 end
 
 -- Selector --
 
 function PagingSettingsFrameEditSelectorText_OnTextChanged(self)
-	PagingProfilesTemporary[PagingEditProfile].selector = self:GetText();
+	PagingProfiles[PagingEditProfile].selector = self:GetText();
 
 	PagingSettingsFrameProfileSelection_UpdateText();
 end
 
 function PagingSettingsFrameEditSelectorText_OnEditFocusLost(self)
-	PagingProfile_ApplyTemporaryProfile();
+	PagingProfile_ApplyEffectiveProfile();
 end
