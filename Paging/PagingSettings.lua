@@ -269,9 +269,9 @@ end
 
 function PagingSettingsFrameProfileSelection_DropDownOnClick(info)
 	PagingProfile_Edit(info.value);
-	PagingUseProfile = info.value;
 	
-	if PagingUseProfile ~= PagingProfile_GetAutomaticProfile() then
+	if (PagingUseProfile == nil and info.value ~= PagingProfile_GetAutomaticProfile()) or PagingUseProfile ~= nil then
+		PagingUseProfile = info.value;
 		PagingSettingsFrameAutoChooseProfile:SetChecked(false);
 	end
 end
