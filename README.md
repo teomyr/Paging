@@ -19,7 +19,7 @@ Paging changes the action bar so that it switches the bar number depending on th
 
 `[mod:shift] 6; [mod:ctrl] 5;`
 
-(This is the example profile supplied with Paging. You can enable it by copying it using the profile selection in Paging's option screen, accessible from the interface options menu.)
+(This is the example profile supplied with Paging. You can use the profile selection menu in Paging's addon settings to copy it to your current profile.)
 
 The meaning of this setting is: "While the shift key is pressed down, choose action page 6. While the control key is pressed down, choose action page 5. In all other cases, use the default action bar."
 Action pages 6 and 5 are the extra bars at the lower left and lower right, respectively. You can then access their abilities using Shift-1, Shift-2, … and CTRL-1, CTRL-2, …
@@ -68,9 +68,9 @@ The mapping of action bar page numbers is as follows (adapted from [Wowpedia: Ac
 4. Right Bar 2
 5. Bottom Right Bar
 6. Bottom Left Bar
-7. *Druid:* Cat Form (Stance 3), *Rogue:* Stealth (Stance 1), *Warrior:* Battle Stance (Stance 1), *Priest:* Shadowform (Stance 1)
-8. *Warrior:* Defensive Stance (Stance 2)
-9. *Druid:* Bear Form (Stance 1), *Warrior:* Berserker Stance (Stance 3)
+7. *Druid:* Cat Form (Stance 3), *Rogue:* Stealth (Stance 1), *Priest:* Shadowform (Stance 1)
+8. Unused
+9. *Druid:* Bear Form (Stance 1)
 10. *Druid:* Moonkin Form (Stance 5)
 
 For the classes not mentioned in the list, pages 7 to 10 are unused and free to be used.
@@ -91,7 +91,7 @@ If you want to tweak this behaviour, for example if you still want quick access 
 Feedback
 ========
 
-If you have any issues with the addon, feel free to report them in the [issue tracker](https://github.com/teomyr/Paging/issues). You can also leave comments on [WoWInterface](http://www.wowinterface.com/downloads/info18229-Paging.html).
+If you have any issues with the addon, feel free to report them in the [issue tracker](https://github.com/teomyr/Paging/issues) on GitHub. Alternatively, you can also leave comments on [WoWInterface](http://www.wowinterface.com/downloads/fileinfo.php?id=18229#comments).
 
 Locales for the English, German and French language versions are included; localization help is greatly appreciated!
 
