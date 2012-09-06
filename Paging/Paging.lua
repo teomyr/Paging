@@ -19,7 +19,10 @@ PagingFrame.UpdatePageDisplay = function(self)
 		-- default up/down paging mechanism to indicate this.
 		ActionBarUpButton:Disable();
 		ActionBarDownButton:Disable();
-		PagingIndicatorFrame:Show();
+
+		if MainMenuBarPageNumber:IsVisible() and MainMenuBarTexture2:IsVisible() then
+			PagingIndicatorFrame:Show();
+		end
 	else
 		-- No paging is currently done, the default action bar is visible.
 		-- Enable the default controls.
