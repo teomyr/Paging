@@ -61,7 +61,7 @@ function PagingProfile_Apply(profileName)
 	-- The user can change this behaviour by explicitly adding a selector for
 	-- these bars as desired.
 
-	local disableFor = { "overridebar", "extrabar", "possessbar", "petbattle" };
+	local disableFor = { "overridebar", "possessbar", "petbattle" };
 	local disableForSelector = "";
 
 	for i, bar in ipairs(disableFor) do
