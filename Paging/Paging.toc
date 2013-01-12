@@ -1,4 +1,4 @@
-## Interface: 50001
+## Interface: 50200
 ## Title: Paging
 ## Version: 1.0.4
 ## Author: Teomyr
