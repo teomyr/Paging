@@ -9,7 +9,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				
+
 				<FontString name="$parentEditSelectorTextLabel" inherits="GameFontNormal">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
@@ -17,7 +17,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				
+
 				<FontString name="$parentVersion" inherits="GameFontDisable">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
@@ -27,7 +27,7 @@
 				</FontString>
 			</Layer>
 		</Layers>
-		
+
 		<Frames>
 			<Frame name="$parentProfileSelection" inherits="UIDropDownMenuTemplate" enableMouse="true">
 				<Anchors>
@@ -41,22 +41,22 @@
 						self.type = CONTROLTYPE_DROPDOWN;
 						self.label = getglobal(self:GetName() .. "Label");
 						self.label:SetText(PagingL["Profile:"]);
-						
+
 						UIDropDownMenu_Initialize(self, PagingSettingsFrameProfileSelection_DropDownCallback);
-						
+
 						UIDropDownMenu_SetWidth(self, 275, 5); 
 						UIDropDownMenu_JustifyText(self, "LEFT");
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			
+
 			<CheckButton name="$parentAutoChooseProfile" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor relativeTo="$parentProfileSelection" point="TOPLEFT" relativePoint="BOTTOMLEFT">
 						<Offset x="15" y="-8" />
 					</Anchor>
 				</Anchors>
-				
+
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString name="$parentHelpText" inherits="GameFontWhite" justifyH="LEFT" justifyV="TOP">
@@ -65,19 +65,19 @@
 									<Offset y="-10" />
 								</Anchor>
 							</Anchors>
-							
+
 							<Size>
 								<AbsDimension x="500" y="80" />
 							</Size>
 						</FontString>
 					</Layer>
 				</Layers>
-				
+
 				<Scripts>
 					<OnLoad>
 						self.label = getglobal(self:GetName() .. "Text");
 						self.label:SetText(PagingL["Automatically choose matching profile"]);
-						
+
 						self.helpText = getglobal(self:GetName() .. "HelpText");
 						self.helpText:SetText(
 							PagingL["Selects the most appropriate profile automatically at each login."] .."\n"..
@@ -95,7 +95,7 @@
 						<Offset x="15" y="-90" />
 					</Anchor>
 				</Anchors>
-				
+
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString name="$parentHelpText" inherits="GameFontWhite" justifyH="LEFT" justifyV="TOP">
@@ -104,19 +104,19 @@
 									<Offset y="-10" />
 								</Anchor>
 							</Anchors>
-							
+
 							<Size>
 								<AbsDimension x="500" y="80" />
 							</Size>
 						</FontString>
 					</Layer>
 				</Layers>
-				
+
 				<Scripts>
 					<OnLoad>
 						self.label = getglobal(self:GetName() .. "Text");
 						self.label:SetText(PagingL["Adjust key bindings for modifiers"]);
-						
+
 						self.helpText = getglobal(self:GetName() .. "HelpText");
 						self.helpText:SetText(
 							PagingL["Make sure that key presses involving modifiers such as CTRL, ALT or SHIFT go to the correct action buttons."] .. " " ..
@@ -126,24 +126,24 @@
 					<OnClick function="PagingSettingsFrameOverrideModifiers_OnClick" />
 				</Scripts>
 			</CheckButton>
-			
+
 			<ScrollFrame name="$parentEditSelector" inherits="UIPanelScrollFrameTemplate">
 				<Anchors>
 					<Anchor relativeTo="$parentEditSelectorTextLabel" point="TOPLEFT" relativePoint="BOTTOMLEFT">
 						<Offset x="7" y="-15" />
 					</Anchor>
 				</Anchors>
-				
+
 				<Size>
 					<AbsDimension x="560" y="65" />
 				</Size>
-				
+
 				<ScrollChild>
 					<EditBox name="$parentText" multiLine="true" autoFocus="false">
 						<Size>
 							<AbsDimension x="550" y="35" />
 						</Size>
-						
+
 						<Scripts>
 							<OnLoad>
 								self.label = getglobal(self:GetName() .. "Label");
@@ -166,12 +166,12 @@
 								PagingSettingsFrameEditSelectorText_OnEditFocusLost(self);
 							</OnEditFocusLost>
 						</Scripts>
-						
+
 						<FontString inherits="GameFontHighlight" />
 					</EditBox>
 				</ScrollChild>
 			</ScrollFrame>
-			
+
 			<Frame name="$parentEditSelectorTextBackground" enableMouse="false">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentEditSelector">
@@ -181,7 +181,7 @@
 						<Offset x="28" y="-8" />
 					</Anchor>
 				</Anchors>
-				
+
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString name="$parentHelpText" inherits="GameFontWhite" justifyH="LEFT" justifyV="TOP">
@@ -196,7 +196,7 @@
 						</FontString>
 					</Layer>
 				</Layers>
-				
+
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 					<EdgeSize>
 						<AbsValue val="16"/>
@@ -212,7 +212,7 @@
 					<OnLoad>
 						self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b);
 						self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b);
-						
+
 						self.helpText = getglobal(self:GetName() .. "HelpText");
 						self.helpText:SetText(
 							PagingL["Use macro modifier syntax to specify the page numbers, separated by semicolons."] .." "..
@@ -223,7 +223,7 @@
 				</Scripts>
 			</Frame>
 		</Frames>
-		
+
 		<Scripts>
 			<OnLoad function="PagingSettingsFrame_OnLoad" />
 			<OnEvent function="PagingSettingsFrame_OnEvent" />

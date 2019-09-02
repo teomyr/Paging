@@ -39,7 +39,7 @@ PagingFrame.UpdatePageDisplay = function(self)
 			currentPage = GetActionBarPage();
 		end
 	end
-	
+
 	MainMenuBarPageNumber:SetText(currentPage);
 end;
 
@@ -201,7 +201,7 @@ function Paging_SetOptions(options, overrideModifiers)
 
 	if not PagingInitialized or InCombatLockdown() then
 		PagingOptionsQueued = options;
-		
+
 		if InCombatLockdown() then
 			PagingFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 		end
@@ -215,7 +215,7 @@ function Paging_SetOptions(options, overrideModifiers)
 	PagingFrame:SetAttribute("state-paging", SecureCmdOptionParse(options));
 
 	RegisterAttributeDriver(PagingFrame, "state-paging", options);
-	
+
 	PagingBindingsUpdated = false;
 	Paging_UpdateBindings();
 end

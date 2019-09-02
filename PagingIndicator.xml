@@ -6,30 +6,29 @@
                 <Offset x="0" y="0" />
             </Anchor>
         </Anchors>
-        
+
         <Size>
             <AbsDimension x="64" y="64" />
         </Size>
-        
+
         <Layers>
             <Layer level="OVERLAY">
                 <Texture file="Interface\AddOns\Paging\PagingIndicatorBackdrop.tga">
                     <Size>
                         <AbsDimension x="64" y="64" />
                     </Size>
-                    
+
                     <Anchors>
                         <Anchor point="CENTER">
                             <Offset x="0" y="0" />
                         </Anchor>
                     </Anchors>
-                    
-                    
+
                     <TexCoords left="0" right="1" top="0" bottom="1" />
                 </Texture>
             </Layer>
         </Layers>
-        
+
         <Scripts>
             <OnShow>
                 -- Swap shadow and text color because we're going to show a light background

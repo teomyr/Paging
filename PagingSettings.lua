@@ -198,7 +198,7 @@ local retainBackup = false;
 
 function PagingSettingsFrame_Refresh(self)
 	-- Called when the settings frame is brought up or after applying defaults.
-	
+
 	PagingSettingsFrameAutoChooseProfile:SetChecked(PagingUseProfile == nil);
 	PagingProfile_Edit(PagingProfile_GetEffectiveProfile());
 
@@ -227,7 +227,7 @@ end
 
 function PagingSettingsFrame_Default(self)
 	-- Clear this character's settings
-	
+
 	-- Before clearing, make a backup so that the user can undo this using
 	-- the "Cancel" button.
 	PagingUseProfileBackup = PagingUseProfile;
@@ -269,7 +269,7 @@ end
 
 function PagingSettingsFrameProfileSelection_DropDownOnClick(info)
 	PagingProfile_Edit(info.value);
-	
+
 	if (PagingUseProfile == nil and info.value ~= PagingProfile_GetAutomaticProfile()) or PagingUseProfile ~= nil then
 		PagingUseProfile = info.value;
 		PagingSettingsFrameAutoChooseProfile:SetChecked(false);
@@ -300,7 +300,7 @@ function PagingSettingsFrameProfileSelection_CopyFromOnClick(info)
 	-- Prompt before simply overwriting the currently edited selector
 	if PagingProfile_IsActive(PagingEditProfile) then
 		StaticPopupDialogs["PAGING_CONFIRM_OVERWRITE"].OnAccept = commitCopy;
-		
+
 		local profileType, profileSubject = PagingEditProfile:match("(%u+):?([^-]*)");
 		local displayText = PagingProfile_Types[profileType];
 
