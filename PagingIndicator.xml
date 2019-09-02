@@ -32,15 +32,15 @@
         <Scripts>
             <OnShow>
                 -- Swap shadow and text color because we're going to show a light background
-                local tempColor = { MainMenuBarPageNumber:GetTextColor() };
-                MainMenuBarPageNumber:SetTextColor(MainMenuBarPageNumber:GetShadowColor());
-                MainMenuBarPageNumber:SetShadowColor(unpack(tempColor));
+                local tempColor = { MainMenuBarArtFrame.PageNumber:GetTextColor() };
+                MainMenuBarArtFrame.PageNumber:SetTextColor(MainMenuBarArtFrame.PageNumber:GetShadowColor());
+                MainMenuBarArtFrame.PageNumber:SetShadowColor(unpack(tempColor));
                 self:SetAlpha(tempColor[4]);
             </OnShow>
             <OnHide>
-                local tempColor = { MainMenuBarPageNumber:GetTextColor() };
-                MainMenuBarPageNumber:SetTextColor(MainMenuBarPageNumber:GetShadowColor());
-                MainMenuBarPageNumber:SetShadowColor(unpack(tempColor));
+                local tempColor = { MainMenuBarArtFrame.PageNumber:GetTextColor() };
+                MainMenuBarArtFrame.PageNumber:SetTextColor(MainMenuBarArtFrame.PageNumber:GetShadowColor());
+                MainMenuBarArtFrame.PageNumber:SetShadowColor(unpack(tempColor));
             </OnHide>
         </Scripts>
     </Frame>

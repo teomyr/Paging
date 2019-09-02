@@ -20,7 +20,7 @@ PagingFrame.UpdatePageDisplay = function(self)
 		ActionBarUpButton:Disable();
 		ActionBarDownButton:Disable();
 
-		if MainMenuBarPageNumber:IsVisible() and MainMenuBarTexture2:IsVisible() then
+		if MainMenuBarArtFrame.PageNumber:IsVisible() and MainMenuBarTexture2:IsVisible() then
 			PagingIndicatorFrame:Show();
 		end
 	else
@@ -40,7 +40,7 @@ PagingFrame.UpdatePageDisplay = function(self)
 		end
 	end
 
-	MainMenuBarPageNumber:SetText(currentPage);
+	MainMenuBarArtFrame.PageNumber:SetText(currentPage);
 end;
 
 function Paging_Initialize()
