@@ -2,7 +2,7 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
     <Frame name="PagingIndicatorFrame" parent="MainMenuBarArtFrame" frameLevel="2" hidden="true">
         <Anchors>
-            <Anchor relativeTo="MainMenuBarTexture2" point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+            <Anchor relativeTo="MainMenuBarArtFrameBackground" point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
                 <Offset x="0" y="0" />
             </Anchor>
         </Anchors>
