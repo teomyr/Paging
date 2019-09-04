@@ -2,6 +2,8 @@ For players who want to get the most out of the default action bar, the **Paging
 
 Since Paging uses the default Blizzard action bar, it is quick to set up ‒ there are no extra bars to fiddle around on screen, and it stays out of the way when paging is not necessary. This makes the addon ideal for players who do not want to spend time on configuring a full-blown action bar replacement, but who desire the automatic paging feature that some of them have to offer.
 
+This is the **Classic** version of the addon. Development for the Retail version of World of Warcraft is done on the master branch.
+
 Quick facts
 ===========
 
