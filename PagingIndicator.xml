@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-    <Frame name="PagingIndicatorFrame" parent="MainMenuBarArtFrame" frameLevel="3" hidden="true">
+    <Frame name="PagingIndicatorFrame" parent="MainMenuBarArtFrame" frameLevel="2" hidden="true">
         <Anchors>
             <Anchor relativeTo="MainMenuBarTexture2" point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
                 <Offset x="0" y="0" />
