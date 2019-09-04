@@ -62,7 +62,7 @@ Reference
 
 For a list of macro conditionals, please have a look at [Wowpedia: Macro conditionals](http://www.wowpedia.org/Macro_conditionals).
 
-The mapping of action bar page numbers is as follows (adapted from [Wowpedia: Action Bar](http://www.wowpedia.org/Action_Bar) and [Wowpedia: Stance](http://www.wowpedia.org/Stance)):
+The mapping of action bar page numbers is as follows (adapted from [Wowpedia: Action Bar](http://www.wowpedia.org/Action_Bar)):
 
 1. Primary Action Bar
 2. Primary Action Bar
@@ -70,9 +70,9 @@ The mapping of action bar page numbers is as follows (adapted from [Wowpedia: Ac
 4. Right Bar 2
 5. Bottom Right Bar
 6. Bottom Left Bar
-7. *Druid:* Cat Form (Stance 3), *Rogue:* Stealth (Stance 1), *Priest:* Shadowform (Stance 1)
-8. Unused
-9. *Druid:* Bear Form (Stance 1)
+7. *Druid:* Cat Form (Stance 3), *Rogue:* Stealth (Stance 1), *Warrior:* Battle Stance (Stance 1), *Priest:* Shadowform (Stance 1)
+8. *Warrior:* Defensive Stance (Stance 2)
+9. *Druid:* Bear Form (Stance 1), *Warrior:* Berserker Stance (Stance 3)
 10. *Druid:* Moonkin Form (Stance 5)
 
 For the classes not mentioned in the list, pages 7 to 10 are unused and free to be used.
