@@ -62,7 +62,7 @@ Reference
 
 For a list of macro conditionals, please have a look at [Wowpedia: Macro conditionals](http://www.wowpedia.org/Macro_conditionals).
 
-The mapping of action bar page numbers is as follows (adapted from [Wowpedia: Action Bar](http://www.wowpedia.org/Action_Bar) and [Wowpedia: Stance](http://www.wowpedia.org/Stance)):
+The mapping of action bar page numbers is as follows (adapted from [Wowpedia: Action Bar](http://www.wowpedia.org/Action_Bar)):
 
 1. Primary Action Bar
 2. Primary Action Bar
@@ -70,14 +70,14 @@ The mapping of action bar page numbers is as follows (adapted from [Wowpedia: Ac
 4. Right Bar 2
 5. Bottom Right Bar
 6. Bottom Left Bar
-7. *Druid:* Cat Form (Stance 3), *Rogue:* Stealth (Stance 1), *Priest:* Shadowform (Stance 1)
+7. *Druid:* Cat Form (Stance 2), *Rogue:* Stealth (Stance 1)
 8. Unused
 9. *Druid:* Bear Form (Stance 1)
-10. *Druid:* Moonkin Form (Stance 5)
+10. *Druid:* Moonkin Form (Stance 4)
 
 For the classes not mentioned in the list, pages 7 to 10 are unused and free to be used.
 
-*You do not have to write selectors for the default stance-based paging* (and you shouldn't do that either). This means that e.g. if you're a druid, don't use selectors like `[stance:1] 9; [stance:3] 7; [stance:5] 10;` to get the usual stance bars ‒ the default behavior already does that for you, so you only have to let it fall back to an empty selector in that case.
+*You do not have to write selectors for the default stance-based paging* (and you shouldn't do that either). This means that e.g. if you're a druid, don't use selectors like `[stance:1] 9; [stance:2] 7; [stance:4] 10;` to get the usual stance bars ‒ the default behavior already does that for you, so you only have to let it fall back to an empty selector in that case.
 
 Tips
 ====
